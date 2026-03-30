@@ -1,6 +1,6 @@
 import React, {FC} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import { HomeScreen } from '../screens';
+import { DriverDetailsScreen, DriverListScreen, DriverMapScreen } from '../screens';
 
 
 const HomeStackNavigator: FC = () => {
@@ -8,7 +8,9 @@ const HomeStackNavigator: FC = () => {
   return (
     <HomeStack.Navigator screenOptions={{headerShown: false}}>
 
-        <HomeStack.Screen name="HomeScreen" component={HomeScreen} />
+        <HomeStack.Screen name="DriverMapScreen" component={DriverMapScreen} />
+        <HomeStack.Screen name="DriverListScreen" component={DriverListScreen} />
+        <HomeStack.Screen name="DriverDetailsScreen" component={DriverDetailsScreen} />
       
     </HomeStack.Navigator>
   );

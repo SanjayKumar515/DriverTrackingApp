@@ -1,13 +1,10 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react';
+import DriverMapScreen from '../DriverMapScreen/driverMapScreen';
+
 
 const HomeScreen = () => {
-  return (
-    <View>
-      <Text>HomeScreen</Text>
-    </View>
-  )
-}
+  return <DriverMapScreen />;
+};
 
 export default HomeScreen
-
+ 

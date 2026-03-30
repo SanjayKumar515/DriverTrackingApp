@@ -3,6 +3,7 @@ import { LogBox } from 'react-native';
 import Route from './src/routes/routes';
 import { UserDataContextProvider } from './src/context/userDataContext';
 import { CommonLoaderProvider } from './src/components/CommonLoader/commonLoader';
+import { DriversProvider } from './src/features/drivers/driversContext';
 
 
 const App: FC = () => {
@@ -12,7 +13,9 @@ const App: FC = () => {
   return (
     <UserDataContextProvider>
       <CommonLoaderProvider>
+        <DriversProvider>
           <Route />
+        </DriversProvider>
       </CommonLoaderProvider>
     </UserDataContextProvider>
   );
