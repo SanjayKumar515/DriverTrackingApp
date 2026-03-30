@@ -1,8 +1,7 @@
 import React, { FC, memo } from 'react';
 import { Marker } from 'react-native-maps';
 import { AnimatedRegion } from 'react-native-maps';
-import { Driver } from '../../../../types/driver';
-
+import { Driver } from '../../types/driver';
 type Props = {
   driver: Driver;
   animated?: AnimatedRegion;

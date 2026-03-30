@@ -1,7 +1,7 @@
 import React, { FC, memo } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import Modal from 'react-native-modal';
-import { Driver } from '../../../../types/driver';
+import { Driver } from '../../types/driver';
 
 type Props = {
   visible: boolean;

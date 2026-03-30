@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react';
-import DriverMapScreen from '../DriverMapScreen/driverMapScreen';
-
+import React from 'react';
+import DriverListScreen from '../DriverListScreen/driverListScreen';
 
 const HomeScreen = () => {
-  return <DriverMapScreen />;
+  return <DriverListScreen />;
 };
 
 export default HomeScreen

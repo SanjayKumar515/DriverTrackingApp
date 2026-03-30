@@ -69,7 +69,7 @@ const Route: FC = () => {
         style={{ flex: 1 }}
         edges={['top', 'left', 'right']}
       >
-        <OfflineBanner visible={isOffline} />
+        <OfflineBanner visible={isOffline} position="bottom" />
         <NavigationContainer>
           <Stack.Navigator screenOptions={{ headerShown: false }}>
             {userLogin ? (

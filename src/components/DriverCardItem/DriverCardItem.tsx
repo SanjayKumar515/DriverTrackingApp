@@ -1,6 +1,6 @@
 import React, { FC, memo } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
-import { Driver } from '../../../../types/driver';
+import { Driver } from '../../types/driver';
 
 type Props = {
   driver: Driver;
