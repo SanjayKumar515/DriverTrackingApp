@@ -44,7 +44,12 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
+  include("/Users/sanjaykumar/Documents/GitHub/DriverTrackingApp/android/app/.cxx/Debug/4a4e552j/x86_64/AsyncStorageSpec_autolinked_build/cmake_install.cmake")
+  include("/Users/sanjaykumar/Documents/GitHub/DriverTrackingApp/android/app/.cxx/Debug/4a4e552j/x86_64/RNCNetInfoSpec_autolinked_build/cmake_install.cmake")
+  include("/Users/sanjaykumar/Documents/GitHub/DriverTrackingApp/android/app/.cxx/Debug/4a4e552j/x86_64/lottiereactnative_autolinked_build/cmake_install.cmake")
+  include("/Users/sanjaykumar/Documents/GitHub/DriverTrackingApp/android/app/.cxx/Debug/4a4e552j/x86_64/RNMapsSpecs_autolinked_build/cmake_install.cmake")
   include("/Users/sanjaykumar/Documents/GitHub/DriverTrackingApp/android/app/.cxx/Debug/4a4e552j/x86_64/safeareacontext_autolinked_build/cmake_install.cmake")
+  include("/Users/sanjaykumar/Documents/GitHub/DriverTrackingApp/android/app/.cxx/Debug/4a4e552j/x86_64/rnscreens_autolinked_build/cmake_install.cmake")
 
 endif()
 
