@@ -1,80 +1,193 @@
-import { StyleSheet } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 import Colors from '../../../constant/colors';
 
 
-// Define the styles using StyleSheet
+const ACCENT = Colors.PRIMARY[100];
+const CARD_RADIUS = 28;
+
 const styles = StyleSheet.create({
-  container: {
+  flex: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#F3F4F8',
+  },
+  scroll: {
+    flexGrow: 1,
     paddingHorizontal: 20,
+    paddingTop: 60,
+    paddingBottom: 32,
+    alignItems: 'center',
+  },
+  logo:{
+   height: 45,
+   width: 45,
+   resizeMode: 'contain',
+  },
+
+  // Header
+  header: {
+    alignItems: 'center',
+    marginBottom: 32,
+  },
+  logoCircle: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: "rgba(108,99,255,0.14)",
+    alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: 20,
+    shadowColor: ACCENT,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.35,
+    shadowRadius: 16,
+    elevation: 10,
+  },
+  logoLetter: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: '#fff',
+    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
-    color:Colors.PRIMARY[100],
-    marginBottom: 18,
-    textAlign: 'center',
+    fontWeight: '700',
+    color: '#111827',
+    letterSpacing: -0.5,
+    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
   },
   subtitle: {
-    fontSize: 18,
-    color: '#000',
-    marginBottom: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontSize: 15,
+    color: '#6B7280',
+    marginTop: 6,
+    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
   },
-  input: {
-    backgroundColor: '#ebeffc',
-    padding: 15,
+
+  // Card
+  card: {
+    width: '100%',
+    backgroundColor: '#FFFFFF',
+    borderRadius: CARD_RADIUS,
+    padding: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 24,
+    elevation: 6,
+  },
+
+  // Error banner
+  errorBanner: {
+    backgroundColor: '#FEF2F2',
     borderRadius: 10,
-    marginBottom: 15,
-    fontSize: 16,
-    color: '#333',
+    padding: 12,
+    marginBottom: 16,
+    borderLeftWidth: 3,
+    borderLeftColor: '#EF4444',
   },
-  forgotPasswordText: {
-    color: Colors.PRIMARY[100],
-    fontSize: 14,
-    textAlign: 'right',
-    fontWeight: 'bold',
+  errorBannerText: {
+    color: '#DC2626',
+    fontSize: 13,
+    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
+  },
+
+  fieldError: {
+    color: '#EF4444',
+    fontSize: 12,
+    marginTop: -10,
+    marginBottom: 10,
+    marginLeft: 4,
+    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
+  },
+
+  showHide: {
+    color: ACCENT,
+    fontWeight: '700',
+    fontSize: 13,
+    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
+  },
+
+  forgotRow: {
+    alignSelf: 'flex-end',
     marginBottom: 20,
+    marginTop: 2,
   },
+  forgotText: {
+    color: ACCENT,
+    fontSize: 13,
+    fontWeight: '600',
+    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
+  },
+
+  // Button
   button: {
-    backgroundColor:Colors.PRIMARY[100],
-    paddingVertical: 15,
-    borderRadius: 10,
+    backgroundColor: ACCENT,
+    borderRadius: 14,
+    paddingVertical: 16,
     alignItems: 'center',
-    marginBottom: 20,
+    shadowColor: ACCENT,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 6,
   },
   buttonText: {
-    color: '#fff',
+    color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '700',
+    letterSpacing: 0.5,
+    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
   },
-  createAccountText: {
-    fontSize: 14,
-    color: '#666',
-    textAlign: 'center',
-    marginBottom: 30,
-  },
-  continueWithText: {
-    fontSize: 14,
-    color: '#4A90E2',
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-  socialContainer: {
+
+  // Divider
+  dividerRow: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#E5E7EB',
+  },
+  dividerText: {
+    marginHorizontal: 12,
+    color: '#9CA3AF',
+    fontSize: 13,
+    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
+  },
+
+  // Social
+  socialBtn: {
+    borderWidth: 1.5,
+    borderColor: '#E5E7EB',
+    borderRadius: 14,
+    paddingVertical: 14,
     alignItems: 'center',
   },
-  socialButton: {
-    marginHorizontal: 10,
-    padding: 10,
-    borderRadius: 50,
-    backgroundColor: '#F2F2F2',
+  socialBtnText: {
+    fontSize: 15,
+    color: '#374151',
+    fontWeight: '600',
+    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
+  },
+
+  // Footer
+  footer: {
+    flexDirection: 'row',
+    marginTop: 28,
     alignItems: 'center',
-    justifyContent: 'center',
+  },
+  footerText: {
+    color: '#6B7280',
+    fontSize: 14,
+    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
+  },
+  footerLink: {
+    color: ACCENT,
+    fontWeight: '700',
+    fontSize: 14,
+    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
   },
 });
+
 export default styles;

@@ -4,6 +4,7 @@ import Route from './src/routes/routes';
 import { UserDataContextProvider } from './src/context/userDataContext';
 import { CommonLoaderProvider } from './src/components/CommonLoader/commonLoader';
 import { DriversProvider } from './src/features/drivers/driversContext';
+import ErrorBoundary from './src/components/ErrorBoundary/errorBoundary';
 
 
 const App: FC = () => {
@@ -11,13 +12,15 @@ const App: FC = () => {
   LogBox.ignoreLogs(['Warning: ...']);
   LogBox.ignoreAllLogs();
   return (
-    <UserDataContextProvider>
-      <CommonLoaderProvider>
-        <DriversProvider>
-          <Route />
-        </DriversProvider>
-      </CommonLoaderProvider>
-    </UserDataContextProvider>
+    <ErrorBoundary>
+      <UserDataContextProvider>
+        <CommonLoaderProvider>
+          <DriversProvider>
+            <Route />
+          </DriversProvider>
+        </CommonLoaderProvider>
+      </UserDataContextProvider>
+    </ErrorBoundary>
   );
 };
 export default App;

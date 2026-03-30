@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  logOutIcon: { width: 35, height: 35,resizeMode: 'contain' },
   headerIconText: { color: "#fff", fontWeight: "900", fontSize: 18 },
   headerTitle: { color: "#fff", fontWeight: "900", fontSize: 22 },
   searchPill: {

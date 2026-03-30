@@ -48,6 +48,7 @@ const DriverMapScreen: FC = () => {
   const [filterRating, setFilterRating] = useState(false);
   const [filterNearest, setFilterNearest] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [mapReady, setMapReady] = useState(false);
   const [userCoord, setUserCoord] = useState<{
     latitude: number;
     longitude: number;
@@ -66,6 +67,7 @@ const DriverMapScreen: FC = () => {
   };
 
   useEffect(() => {
+    setMapReady(false);
     refreshDrivers(10);
   }, [refreshDrivers]);
 
@@ -191,8 +193,8 @@ const DriverMapScreen: FC = () => {
           scrollEnabled
           pitchEnabled
           rotateEnabled
-          mapType={Platform.OS === "android" ? "mutedStandard" : "standard"}
           onMapReady={() => {
+            setMapReady(true);
             if (mapRef.current && filtered.length) {
               mapRef.current.fitToCoordinates(filtered.map(({ d }) => d.coordinate), {
                 edgePadding: { top: 100, right: 60, bottom: 260, left: 60 },
@@ -200,6 +202,7 @@ const DriverMapScreen: FC = () => {
               });
             }
           }}
+          mapType={Platform.OS === "android" ? "mutedStandard" : "standard"}
           onUserLocationChange={(e) => {
             const c = e?.nativeEvent?.coordinate;
             if (c?.latitude && c?.longitude)
@@ -265,9 +268,9 @@ const DriverMapScreen: FC = () => {
           />
         </View>
 
-        {loading && (
+        {(loading || !mapReady) && (
           <View style={styles.loadingOverlay}>
-            <ActivityIndicator color={Colors.PRIMARY[400]} />
+            <ActivityIndicator color={Colors.PRIMARY[400]} size="large" />
           </View>
         )}
 

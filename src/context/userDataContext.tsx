@@ -12,6 +12,7 @@ export interface UserData {
   setIsLoggedIn: ( value: boolean | any ) => void;
   userData: any;
   setUserData: ( data: any ) => void;
+  signOut: () => Promise<void>;
  
 }
 
@@ -30,6 +31,17 @@ const UserDataContextProvider: FC<Props> = ( { children } ) => {
   const [ isLoggedIn, setIsLoggedIn ] = useState<string | null>( null );
   const [ userData, setUserData ] = useState<any>( '' );
  
+  const signOut = async () => {
+    try {
+      await LocalStorage.removeItem('@token');
+      await LocalStorage.removeItem('@user');
+      await LocalStorage.removeItem('@login');
+    } catch (error) {
+      console.warn('SignOut cache cleanup failed', error);
+    }
+    setUserData(null);
+    setIsLoggedIn(null);
+  };
 
   useEffect( () => {
     setContextDataFromStorage();
@@ -55,7 +67,7 @@ const UserDataContextProvider: FC<Props> = ( { children } ) => {
         setIsLoggedIn,
         userData,
         setUserData,
-      
+        signOut,
       } }
     >
       { children }

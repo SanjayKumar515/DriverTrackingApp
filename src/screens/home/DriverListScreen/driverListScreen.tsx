@@ -1,10 +1,9 @@
-import React, { FC, memo, useEffect, useMemo, useState } from "react";
+import React, { FC, memo, useContext, useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
   Image,
   RefreshControl,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -12,14 +11,15 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useNetInfo } from "@react-native-community/netinfo";
-import Colors from "../../../constant/colors";
 import { useDrivers } from "../../../features/drivers/driversContext";
+import { UserDataContext } from "../../../context/userDataContext";
 import { Driver } from "../../../types/driver";
 import styles from "./driverListScreen.styles";
 
 const DriverListScreen: FC = () => {
   const navigation = useNavigation();
   const { drivers, loading, error, refreshDrivers, isFavorite } = useDrivers();
+  const { signOut } = useContext(UserDataContext);
   const netInfo = useNetInfo();
 
   const [query, setQuery] = useState("");
@@ -54,9 +54,14 @@ const DriverListScreen: FC = () => {
       <View style={styles.header}>
         <View style={styles.headerRow}>
           <Text style={styles.headerTitle}>Drivers</Text>
-          <View style={{ width: 40 }} />
+          <TouchableOpacity
+            onPress={signOut}
+            style={styles.logoutBtn}
+            testID="signout-button"
+          >
+            <Text style={styles.logoutText}>Log out</Text>
+          </TouchableOpacity>
         </View>
-
         <View style={styles.searchPill}>
           <Text style={styles.searchIcon}>⌕</Text>
           <TextInput

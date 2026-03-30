@@ -1,56 +1,73 @@
 import React, { useContext, useMemo, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
-import styles from './loginScreen.styles';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Image,
+} from 'react-native';
 import { UserService } from '../../../services/apiServices';
 import { LocalStorage } from '../../../helpers/localStorage';
 import { CommonLoader } from '../../../components/CommonLoader/commonLoader';
+import {FloatingInput} from '../../../components';
 import { UserData, UserDataContext } from '../../../context/userDataContext';
+import styles from './loginScreen.styles';
 
+
+
+
+const validateEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+
+const getFieldErrors = (email: string, password: string) => ({
+  email:
+    !email.trim()
+      ? 'Email or username is required.'
+      : email.includes('@') && !validateEmail(email)
+      ? 'Enter a valid email address.'
+      : '',
+  password: !password.trim()
+    ? 'Password is required.'
+    : password.length < 4
+    ? 'Password is too short.'
+    : '',
+});
 
 const LoginScreen: React.FC = () => {
-  
-
   const { setIsLoggedIn, setUserData } = useContext<UserData>(UserDataContext);
   const { showLoader, hideLoader } = CommonLoader();
-
-  const [email, setEmail] = useState<string>(''); // accepts email OR username
-  const [password, setPassword] = useState<string>('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
-  const [error, setError] = useState<string>('');
+  const [touched, setTouched] = useState({ email: false, password: false });
+  const [apiError, setApiError] = useState('');
+  const fieldErrors = useMemo(() => getFieldErrors(email, password), [email, password]);
 
-  const emailLooksValid = useMemo(() => {
-    const trimmed = email.trim();
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed);
-  }, [email]);
-
-  const canSubmit = useMemo(() => {
-    return email.trim().length > 0 && password.trim().length > 0;
-  }, [email, password]);
+  const canSubmit =
+    email.trim().length > 0 &&
+    password.trim().length > 0 &&
+    !fieldErrors.email &&
+    !fieldErrors.password;
 
   const onLogin = async () => {
+    setTouched({ email: true, password: true });
+    if (!canSubmit) return;
+
     const trimmedEmail = email.trim();
     const trimmedPassword = password.trim();
-
-    if (!trimmedEmail || !trimmedPassword) {
-      setError('Email and password are required.');
-      return;
-    }
     const looksLikeEmail = trimmedEmail.includes('@');
-    if (looksLikeEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
-      setError('Please enter a valid email address.');
-      return;
-    }
 
-    setError('');
+    setApiError('');
     showLoader();
     try {
-      // If it's not an email, treat as DummyJSON username login
       if (!looksLikeEmail) {
         const data = await UserService.loginDummyJson({
           username: trimmedEmail,
           password: trimmedPassword,
           expiresInMins: 30,
         });
+        //@ts-ignore
         const token = data?.accessToken ?? data?.token ?? null;
         await LocalStorage.save('@token', token);
         await LocalStorage.save('@user', { username: trimmedEmail });
@@ -67,7 +84,6 @@ const LoginScreen: React.FC = () => {
       setUserData({ user: { email: trimmedEmail }, token: data?.token ?? null });
       setIsLoggedIn(true);
     } catch (e: any) {
-      // Fallback: reqres.in may be Cloudflare-blocked on some networks.
       if (e?.code === 'REQRES_BLOCKED') {
         const ok =
           trimmedEmail.toLowerCase() === 'eve.holt@reqres.in' &&
@@ -81,86 +97,121 @@ const LoginScreen: React.FC = () => {
           setIsLoggedIn(true);
           return;
         }
-        setError(
-          'Login API is blocked on this network. Use eve.holt@reqres.in / cityslicka to continue (mock).'
-        );
+        setApiError('Network blocked. Use eve.holt@reqres.in / cityslicka (mock).');
         return;
       }
-
-      const message =
-        e?.response?.data?.error ||
-        e?.message ||
-        'Login failed. Please try again.';
-      setError(String(message));
+      setApiError(
+        e?.response?.data?.error || e?.message || 'Login failed. Please try again.'
+      );
     } finally {
       hideLoader();
     }
   };
 
+  const showEmailError = touched.email && !!fieldErrors.email;
+  const showPasswordError = touched.password && !!fieldErrors.password;
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Login here</Text>
-      <Text style={styles.subtitle}>Welcome back you’ve{'\n'} 
-        been missed!</Text>
-
-      {!!error && <Text style={{ color: 'red', marginBottom: 10 }}>{error}</Text>}
-
-      {/* Email Input */}
-      <TextInput
-        style={styles.input}
-        placeholder="Email or username"
-        placeholderTextColor="#999"
-        value={email}
-        onChangeText={(text: string) => setEmail(text)}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-
-      {/* Password Input */}
-      <View style={{ position: 'relative' }}>
-        <TextInput
-          style={[styles.input, { paddingRight: 64 }]}
-          placeholder="Password"
-          placeholderTextColor="#999"
-          secureTextEntry={isPasswordHidden}
-          value={password}
-          onChangeText={(text: string) => setPassword(text)}
-        />
-        <TouchableOpacity
-          onPress={() => setIsPasswordHidden(v => !v)}
-          style={{
-            position: 'absolute',
-            right: 12,
-            top: 0,
-            bottom: 15,
-            justifyContent: 'center',
-          }}
-          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-        >
-          <Text style={{ color: '#4A90E2', fontWeight: '700' }}>
-            {isPasswordHidden ? 'Show' : 'Hide'}
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Forgot Password */}
-      <TouchableOpacity>
-        <Text style={styles.forgotPasswordText}>Forgot your password?</Text>
-      </TouchableOpacity>
-
-      {/* Sign In Button */}
-      <TouchableOpacity
-        style={[styles.button, { opacity: canSubmit ? 1 : 0.6 }]}
-        onPress={onLogin}
-        disabled={!canSubmit}
+    <KeyboardAvoidingView
+      style={styles.flex}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+    >
+      <ScrollView
+        contentContainerStyle={styles.scroll}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.buttonText}>Sign in</Text>
-      </TouchableOpacity>
-    
-     
-    </View>
+        <View style={styles.header}>
+          <View style={styles.logoCircle}>
+            <Image source={require('../../../assets/driverIcon.png')} style={styles.logo} />
+          </View>
+          <Text style={styles.title}>Welcome back</Text>
+          <Text style={styles.subtitle}>Sign in to continue</Text>
+        </View>
+
+       
+        <View style={styles.card}>
+          {/* API error */}
+          {!!apiError && (
+            <View style={styles.errorBanner}>
+              <Text style={styles.errorBannerText}>⚠ {apiError}</Text>
+            </View>
+          )}
+
+          <FloatingInput
+            label="Email or Username"
+            value={email}
+            onChangeText={(t) => { setEmail(t); setApiError(''); }}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            error={showEmailError}
+          />
+          {showEmailError && (
+            <Text style={styles.fieldError}>{fieldErrors.email}</Text>
+          )}
+
+          {/* Password */}
+          <FloatingInput
+            label="Password"
+            value={password}
+            onChangeText={(t) => { setPassword(t); setApiError(''); }}
+            secureTextEntry={isPasswordHidden}
+            error={showPasswordError}
+            rightElement={
+              <TouchableOpacity
+                onPress={() => setIsPasswordHidden((v) => !v)}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              >
+                <Text style={styles.showHide}>{isPasswordHidden ? 'Show' : 'Hide'}</Text>
+              </TouchableOpacity>
+            }
+          />
+          {showPasswordError && (
+            <Text style={[styles.fieldError, { marginTop: -8 }]}>{fieldErrors.password}</Text>
+          )}
+
+          {/* Forgot */}
+          <TouchableOpacity style={styles.forgotRow}>
+            <Text style={styles.forgotText}>Forgot password?</Text>
+          </TouchableOpacity>
+
+          {/* Sign In */}
+          <TouchableOpacity
+            style={[styles.button, { opacity: canSubmit ? 1 : 0.55 }]}
+            onPress={onLogin}
+            activeOpacity={0.82}
+            disabled={!canSubmit}
+          >
+            <Text style={styles.buttonText}>Sign In</Text>
+          </TouchableOpacity>
+
+          {/* Divider */}
+          <View style={styles.dividerRow}>
+            <View style={styles.dividerLine} />
+            <Text style={styles.dividerText}>or</Text>
+            <View style={styles.dividerLine} />
+          </View>
+
+          {/* Social stubs */}
+          <TouchableOpacity style={styles.socialBtn}>
+            <Text style={styles.socialBtnText}>🔵  Continue with Google</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* ── Footer ── */}
+        <View style={styles.footer}>
+          <Text style={styles.footerText}>Don't have an account? </Text>
+          <TouchableOpacity>
+            <Text style={styles.footerLink}>Sign up</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
+
+
 
 
 export default LoginScreen;
